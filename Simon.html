@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>
+Simon!
+</title>
+<style>
+button:disabled
+{
+	opacity:.5;
+	cursor:not-allowed;
+}
+button:enabled
+{
+	opacity:1;
+	cursor:hand;
+}
+.clr
+{
+	background-color:grey;
+	color:black;
+	height:50px;
+	width:200px;
+	cursor:hand;
+	opacity:.5;
+}
+#b1{
+position:absolute;
+left:280px;
+top:200px;
+width:350px;
+height:300px;
+background-color:purple;
+}
+#b2{
+position:absolute;
+left:630px;
+top:200px;
+width:350px;
+height:300px;
+background-color:yellow;
+}
+#b3{
+position:absolute;
+left:280px;
+top:500px;
+width:350px;
+height:300px;
+background-color:red;
+}
+#b4{
+position:absolute;
+left:630px;
+top:500px;
+width:350px;
+height:300px;
+background-color:blue;
+}
+#scoreboard{
+position:absolute;
+left:280px;
+top:150px;
+width:300px;
+height:120px;
+}
+</style>
+<script>
+var turnOff=false,c_pattern="",h_pattern="",index=0,score=0;
+function guess()
+{
+	playerturn=false;
+var g=Math.ceil(Math.random()*4);
+	c_pattern+=g;
+	console.log(c_pattern);
+	playqueue();
+	console.log("c_pattern:"+c_pattern);
+}
+
+function playqueue()
+{
+h_pattern=c_pattern;
+	var cm=setInterval(
+	function turnOff()
+	{
+	if(h_pattern.length>0)
+		{
+		var lett=h_pattern.substr(0,1);
+		console.log("lett:"+lett);
+		blink(document.getElementById('b'+lett));
+		h_pattern=h_pattern.substr(1);
+		console.log(h_pattern);
+		}else
+			{
+			clearInterval(cm);
+			playerturn=true;
+			console.log("c_pattern:"+c_pattern);
+			turnOn();
+			}
+	},500);
+
+}
+
+function blink(but)
+{
+	var sndnumber=but.id.substr(1);
+	var snd=new Audio("Beep"+sndnumber+".mp3");
+	snd.play();
+	but.disabled=true;
+	console.log(but);
+	st=setTimeout(function(){
+	clearTimeout(st);
+	but.disabled=false;
+	if (playerturn)
+		{
+		  if(c_pattern[index]==sndnumber)
+			{
+			console.log("match");
+			index++;
+			if(index>score)score=index;
+			document.getElementById("score").innerHTML=score;
+			}
+				else{			
+				alert("Game Over!");
+				location.href="Simon.html";
+				}
+				if(index>=c_pattern.length){
+				index=0
+				setTimeout(function(){guess();},1500);
+				}
+		}
+	},150);
+	
+}
+
+function init()
+	{
+	c_pattern="";
+	h_pattern="";
+	b1.style.backgroundColor="purple";
+	b2.style.backgroundColor="yellow";
+	b3.style.backgroundColor="red";
+	b4.style.backgroundColor="blue";
+		start.onclick=function()
+		{
+		this.disabled=true;
+		turnOn();
+		b1.onclick=function(){blink(this);}
+		b2.onclick=function(){blink(this);}
+		b3.onclick=function(){blink(this);}
+		b4.onclick=function(){blink(this);}
+		setTimeout(function(){guess();},1000);
+		}
+	}
+
+function turnOneon(b){
+b.disabled=false;
+}
+
+function turnOn()
+{
+	b1.disabled=false;
+	b2.disabled=false;
+	b3.disabled=false;
+	b4.disabled=false;
+}
+function turnOff()
+{
+	b1.disabled=true;
+	b2.disabled=true;
+	b3.disabled=true;
+	b4.disabled=true;
+}
+
+</script>
+</head>
+<body onload="init()">
+<div  id="scoreboard">
+<button id="start">Press to Start Game</button>
+Score <span id="score">0</span>
+</div>
+<button id="b1" class="clr" disabled></button>
+<button id="b2" class="clr" disabled></button>
+<button id="b3" class="clr" disabled></button>
+<button id="b4" class="clr" disabled></button>
+
+</body>
+</html>
